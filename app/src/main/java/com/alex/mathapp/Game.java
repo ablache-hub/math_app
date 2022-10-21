@@ -2,6 +2,7 @@ package com.alex.mathapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class Game extends AppCompatActivity {
     Boolean timeRunning;
 
     CountDownTimer timer;
-    private static final long START_TIMER = 5000;
+    private static final long START_TIMER = 60000;
     long timeLeft = START_TIMER;
 
     @Override
@@ -74,15 +75,35 @@ public class Game extends AppCompatActivity {
         });
     }
     public void gameContinue() {
+        Intent intent = getIntent();
+        String operationLabel = intent.getStringExtra("operationLabel");
+
         number1 = random.nextInt(10);
         number2 = random.nextInt(10);
-        realAnswer = number1 + number2;
 
-        String result = number1 + " + " + number2;
-
-        question.setText(result);
+        question.setText(makeOperation(operationLabel));
         startTimer();
     };
+
+    public String makeOperation (String type) {
+        String result = null;
+
+        switch (type) {
+            case "addition":
+                realAnswer = number1 + number2;
+                result = number1 + " + " + number2;
+                break;
+            case "multiplication":
+                realAnswer = number1 * number2;
+                result = number1 + " * " + number2;
+                break;
+            case "soustraction":
+                realAnswer = number1 - number2;
+                result = number1 + " - " + number2;
+                break;
+        }
+        return result;
+    }
 
     public void startTimer() {
         timer = new CountDownTimer(timeLeft, 1000) {
