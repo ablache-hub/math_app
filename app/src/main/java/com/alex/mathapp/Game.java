@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Random;
@@ -48,19 +50,25 @@ public class Game extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userAnswer = Integer.parseInt(answer.getText().toString());
-
                 pauseTimer();
 
-                if(userAnswer == realAnswer) {
-                    userScore += 10;
-                    score.setText(String.valueOf(userScore));
-                    question.setText("Bravo");
+                if (TextUtils.isEmpty(answer.getText())) {
+                    Toast.makeText(Game.this, "Entrez une valeur", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    userLife -= 1;
-                    life.setText(String.valueOf(userLife));
-                    question.setText("Désolé, mauvaise réponse");
+                    userAnswer = Integer.parseInt(answer.getText().toString());
+                    ok.setEnabled(false);
+
+                    if (userAnswer == realAnswer && userAnswer != 0) {
+                        userScore += 10;
+                        score.setText(String.valueOf(userScore));
+                        question.setText(R.string.bravo);
+
+                    } else {
+                        userLife -= 1;
+                        life.setText(String.valueOf(userLife));
+                        question.setText(R.string.sorry);
+                    }
                 }
             }
         });
@@ -68,13 +76,24 @@ public class Game extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetTimer();
                 answer.setText("");
                 gameContinue();
-                resetTimer();
+
+                if(userLife == 0) {
+                    Intent intent = new Intent(getApplicationContext(), Result.class);
+                    intent.putExtra("score", userScore);
+
+                    startActivity(intent);
+                    finish();
+                } else {
+                    gameContinue();
+                }
             }
         });
     }
     public void gameContinue() {
+        ok.setEnabled(true);
         Intent intent = getIntent();
         String operationLabel = intent.getStringExtra("operationLabel");
 
@@ -121,7 +140,7 @@ public class Game extends AppCompatActivity {
                 timeRunning = false;
                 userLife -= 1;
                 life.setText(String.valueOf(userLife));
-                question.setText("Temps écoulé");
+                question.setText(R.string.timeOut);
             }
         }.start();
 

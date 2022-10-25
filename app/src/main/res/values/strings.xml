@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Math app</string>
+    <string name="timeOut">Temps écoulé</string>
+    <string name="bravo">Bravo</string>
+    <string name="sorry">Désolé, mauvaise réponse</string>
 </resources>

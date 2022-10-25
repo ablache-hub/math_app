@@ -38,5 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // send button label to Game activity
                 intent.putExtra("operationLabel", buttonContent);
                 startActivity(intent);
+                finish();
     }
 }
